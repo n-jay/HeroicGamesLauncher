@@ -63,6 +63,7 @@ export default function SideloadDialog({
   const [runningSetup, setRunningSetup] = useState(false)
   const [gameInfo, setGameInfo] = useState<Partial<GameInfo>>({})
   const [addingApp, setAddingApp] = useState(false)
+  const [yaraWarning, setYaraWarning] = useState('')
   const editMode = Boolean(appName)
 
   const { refreshLibrary, platform } = useContext(ContextProvider)
@@ -377,6 +378,22 @@ export default function SideloadDialog({
                 noDeleteButton
               />
             )}
+            {yaraWarning && showSideloadExe && (
+              <div className="yara-warning">
+                <p
+                  style={{
+                    fontWeight: 'bold',
+                    color: yaraWarning.startsWith('Warning')
+                      ? 'red'
+                      : yaraWarning === 'The executable appears to be safe.'
+                        ? 'green'
+                        : 'inherit'
+                  }}
+                >
+                  {yaraWarning}
+                </p>
+              </div>
+            )}
             {!showSideloadExe && (
               <>
                 <TextInputField
@@ -425,6 +442,33 @@ export default function SideloadDialog({
               : t('button.run-exe-first', 'Run Installer First')}
           </button>
         )}
+        <button
+          onClick={() => {
+            if (platform === 'linux') {
+              void window.api.runYara(selectedExe).then((result) => {
+                if (result.error) {
+                  console.error('YARA error:', result.error)
+                  setYaraWarning('Error running YARA analysis')
+                } else if (
+                  (result as { stdout: string; stderr: string }).stdout &&
+                  (result as { stdout: string; stderr: string }).stdout.trim()
+                ) {
+                  setYaraWarning(
+                    'Warning: The executable could be potential malware!'
+                  )
+                } else {
+                  setYaraWarning('The executable appears to be safe.')
+                }
+              })
+            } else {
+              console.log('YARA is only available on Linux')
+              setYaraWarning('YARA is only available on Linux')
+            }
+          }}
+          className={`button is-danger`}
+        >
+          Analyse
+        </button>
         <button
           onClick={async () => handleInstall()}
           className={`button is-success`}

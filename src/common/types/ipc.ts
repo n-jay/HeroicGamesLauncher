@@ -140,6 +140,9 @@ interface AsyncIPCFunctions {
   kill: (appName: string, runner: Runner) => Promise<void>
   checkDiskSpace: (folder: string) => Promise<DiskSpaceData>
   callTool: (args: Tools) => Promise<void>
+  runYara: (
+    exePath: string
+  ) => Promise<{ stdout: string; stderr: string } | { error: string }>
   runWineCommand: (
     args: WineCommandArgs
   ) => Promise<{ stdout: string; stderr: string }>

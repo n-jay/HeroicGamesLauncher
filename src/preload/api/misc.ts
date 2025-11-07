@@ -1,4 +1,8 @@
-import { makeListenerCaller, makeHandlerInvoker, frontendListenerSlot } from '../ipc'
+import {
+  makeListenerCaller,
+  makeHandlerInvoker,
+  frontendListenerSlot
+} from '../ipc'
 
 export const clearCache = makeListenerCaller('clearCache')
 export const resetHeroic = makeListenerCaller('resetHeroic')
@@ -47,6 +51,7 @@ export const getAlternativeWine = makeHandlerInvoker('getAlternativeWine')
 export const getShellPath = makeHandlerInvoker('getShellPath')
 export const getWebviewPreloadPath = makeHandlerInvoker('getWebviewPreloadPath')
 export const callTool = makeHandlerInvoker('callTool')
+export const runYara = makeHandlerInvoker('runYara')
 export const getAnticheatInfo = makeHandlerInvoker('getAnticheatInfo')
 export const getKnownFixes = makeHandlerInvoker('getKnownFixes')
 export const clipboardReadText = makeHandlerInvoker('clipboardReadText')

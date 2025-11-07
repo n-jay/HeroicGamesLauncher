@@ -53,7 +53,8 @@ import {
   sendGameStatusUpdate,
   checkRosettaInstall,
   writeConfig,
-  createNecessaryFolders
+  createNecessaryFolders,
+  execAsync
 } from './utils'
 import { startPlausible } from './utils/plausible'
 
@@ -639,6 +640,20 @@ addListener('removeFolder', async (e, [path, folderName]) => {
 })
 
 addHandler('runWineCommand', async (e, args) => runWineCommand(args))
+
+addHandler('runYara', async (e, exePath: string) => {
+  if (process.platform !== 'linux') {
+    return { error: 'YARA is only available on Linux' }
+  }
+  try {
+    const rulesPath =
+      '/home/nuwan/Documents/Study/PhD/modules/2025-FA/CS580-B6/project/tools/rules/wannacry.yar' // Placeholder path for YARA rules
+    const result = await execAsync(`yara "${rulesPath}" "${exePath}"`)
+    return result
+  } catch (error) {
+    return { error: (error as Error).message }
+  }
+})
 
 /// IPC handlers begin here.
 
